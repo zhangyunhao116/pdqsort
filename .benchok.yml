@@ -1,0 +1,19 @@
+base:
+  file: "base.txt"
+  beforerun: "rm -f -- base.txt"
+  run: "go test -run=NOTEST -bench=.+/pdqsort -cpu=1 -benchtime=1000x -count=20 -timeout=60m > base.txt"
+  maxerr: 5
+
+cmp:
+  file: "latest.txt"
+  beforerun: "rm -f -- latest.txt"
+  run: "go test -run=NOTEST -bench=.+/pdqsort -cpu=1 -benchtime=1000x -count=20 -timeout=60m > latest.txt"
+  afterrun: "benchstat -alpha=0.001 base.txt latest.txt"
+  maxerr: 5
+
+release:
+  file: "release.txt"
+  beforerun: "rm -f -- release.txt"
+  run: "go test -run=NOTEST -bench=. -cpu=1 -benchtime=1000x -count=10 -timeout=60m > release.txt"
+  afterrun: "benchstat release.txt"
+  maxerr: 5
