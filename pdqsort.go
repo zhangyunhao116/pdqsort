@@ -154,9 +154,8 @@ func breakPatterns[T constraints.Ordered](v []T) {
 func partitionEqual[T constraints.Ordered](v []T, pivotidx int) int {
 	v[0], v[pivotidx] = v[pivotidx], v[0]
 	pivot := v[0] // minimum value
-	v = v[1:]
 
-	L := 0
+	L := 1
 	R := len(v)
 	for {
 		for L < R && pivot >= v[L] {
@@ -172,7 +171,7 @@ func partitionEqual[T constraints.Ordered](v []T, pivotidx int) int {
 		v[L], v[R] = v[R], v[L]
 		L++
 	}
-	return L + 1
+	return L
 }
 
 // partialInsertionSort partially sorts a slice by shifting several out-of-order elements around.
