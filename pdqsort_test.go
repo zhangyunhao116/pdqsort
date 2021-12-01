@@ -72,6 +72,13 @@ func TestPartitionEqual(t *testing.T) {
 	}
 }
 
+func TestPartition(t *testing.T) {
+	fuzzTestPartition(t, func(data []int, pivotidx int) int {
+		idx, _ := partition(data, pivotidx)
+		return idx
+	})
+}
+
 func TestBreakPatternsFuzz(t *testing.T) {
 	randomTestTimes := fastrand.Intn(1000)
 	for i := 0; i < randomTestTimes; i++ {
@@ -84,6 +91,33 @@ func TestBreakPatternsFuzz(t *testing.T) {
 			v1[j] = fastrand.Intn(randomLenth)
 		}
 		breakPatterns(v1)
+	}
+}
+
+func fuzzTestPartition(t *testing.T, f func(data []int, pivotidx int) int) {
+	const times = 2048
+	randomTestTimes := fastrand.Intn(times)
+	for i := 0; i < randomTestTimes; i++ {
+		randomLenth := fastrand.Intn(times)
+		if randomLenth == 0 {
+			continue
+		}
+		v1 := make([]int, randomLenth)
+		for j := 0; j < randomLenth; j++ {
+			randomValue := fastrand.Intn(randomLenth)
+			v1[j] = randomValue
+		}
+		pivotidx := fastrand.Intn(len(v1))
+		newpivotidx := f(v1, pivotidx)
+		pivot := v1[newpivotidx]
+		for i, v := range v1 {
+			if i < newpivotidx && v > pivot {
+				t.Fatal(i, v, pivotidx, pivot)
+			}
+			if i > newpivotidx && v < pivot {
+				t.Fatal(i, v, pivotidx, pivot)
+			}
+		}
 	}
 }
 

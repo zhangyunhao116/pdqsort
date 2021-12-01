@@ -67,11 +67,10 @@ func simplePartition[T constraints.Ordered](v []T, pivotidx int) int {
 		}
 		if i > j {
 			break
-		} else {
-			v[i], v[j] = v[j], v[i]
-			i++
-			j--
 		}
+		v[i], v[j] = v[j], v[i]
+		i++
+		j--
 	}
 	v[j], v[0] = v[0], v[j]
 	return j

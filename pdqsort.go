@@ -80,15 +80,9 @@ func recurse[T constraints.Ordered](v []T, pred T, predExist bool, limit int) {
 		wasPartitioned = wasP
 
 		left, right := v[:mid], v[mid:]
-		var (
-			pivot      T
-			pivotExist bool
-		)
-		if len(right) != 0 {
-			pivot = right[0]
-			pivotExist = true
-			right = right[1:]
-		}
+		pivot := right[0]
+		pivotExist := true
+		right = right[1:]
 
 		if len(left) > len(right) {
 			recurse(left, pred, predExist, limit)
@@ -122,11 +116,10 @@ func partition[T constraints.Ordered](v []T, pivotidx int) (int, bool) {
 		}
 		if i > j {
 			break
-		} else {
-			v[i], v[j] = v[j], v[i]
-			i++
-			j--
 		}
+		v[i], v[j] = v[j], v[i]
+		i++
+		j--
 	}
 	v[j], v[0] = v[0], v[j]
 	return j, j == pivotidx
