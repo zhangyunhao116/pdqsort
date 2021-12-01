@@ -3,7 +3,6 @@ package pdqsort
 import (
 	"constraints"
 	"math/bits"
-	"sort"
 	"strconv"
 )
 

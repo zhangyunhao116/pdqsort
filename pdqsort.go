@@ -79,10 +79,9 @@ func recurse[T constraints.Ordered](v []T, pred T, predExist bool, limit int) {
 		wasBalanced = min(mid, len(v)-mid) >= len(v)/8
 		wasPartitioned = wasP
 
-		left, right := v[:mid], v[mid:]
-		pivot := right[0]
+		left, right := v[:mid], v[mid+1:]
+		pivot := v[mid]
 		pivotExist := true
-		right = right[1:]
 
 		if len(left) > len(right) {
 			recurse(left, pred, predExist, limit)
