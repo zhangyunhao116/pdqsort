@@ -7,8 +7,6 @@ import (
 	"github.com/zhangyunhao116/fastrand"
 )
 
-var sizes = []int{1 << 4, 1 << 8, 1 << 10, 1 << 12, 1 << 16}
-
 func TestPDQSort(t *testing.T) {
 	fuzzTestSort(t, func(data []int) {
 		Slice(data)

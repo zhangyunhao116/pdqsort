@@ -8,6 +8,8 @@ import (
 	"github.com/zhangyunhao116/fastrand"
 )
 
+var sizes = []int{1 << 5, 1 << 8, 1 << 10, 1 << 12, 1 << 16}
+
 func BenchmarkRandom(b *testing.B) {
 	for _, size := range sizes {
 		b.Run(fmt.Sprintf("pdqsort-%d", size), func(b *testing.B) {

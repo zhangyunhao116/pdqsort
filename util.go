@@ -2,15 +2,10 @@ package pdqsort
 
 import (
 	"constraints"
-	"fmt"
 	"math/bits"
+	"sort"
 	"strconv"
 )
-
-func debugPrintln(args ...interface{}) {
-	return
-	fmt.Println(args...)
-}
 
 func min[T constraints.Ordered](a, b T) T {
 	if a < b {

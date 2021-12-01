@@ -7,8 +7,15 @@ base:
 cmp:
   file: "latest.txt"
   beforerun: "rm -f -- latest.txt"
-  run: "go test -run=NOTEST -bench=.+/pdqsort -cpu=1 -benchtime=1000x -count=20 -timeout=60m > latest.txt"
+  run: "go test -run=NOTEST -bench='.+/pdqsort-[^(65536)]' -cpu=1 -benchtime=1000x -count=20 -timeout=60m > latest.txt"
   afterrun: "benchstat -alpha=0.001 base.txt latest.txt"
+  maxerr: 5
+
+cmpall:
+  file: "latestall.txt"
+  beforerun: "rm -f -- latestall.txt"
+  run: "go test -run=NOTEST -bench='.+/pdqsort' -cpu=1 -benchtime=1000x -count=20 -timeout=60m > latestall.txt"
+  afterrun: "benchstat -alpha=0.001 base.txt latestall.txt"
   maxerr: 5
 
 release:
