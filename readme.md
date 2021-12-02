@@ -1,6 +1,11 @@
 # pdqsort
 
-Pattern-defeating quicksort (pdqsort) is a novel sorting algorithm that combines the fast average case of randomized quicksort with the fast worst case of heapsort, while achieving linear time on inputs with certain patterns. The algorithm is based on pattern-defeating quicksort by Orson Peters, the original C++ version  implementation: https://github.com/orlp/pdqsort
+The algorithm is mainly based on pattern-defeating quicksort by Orson Peters.
+
+Compared to sort.Ints(Go1.18), it is **2x** faster in random slices, and **3x ~ 60x** faster in common patterns.
+
+- C++  implementation: https://github.com/orlp/pdqsort
+- Rust implementation: https://docs.rs/pdqsort/latest/pdqsort/
 
 ```
 Best        Average     Worst       Memory      Stable      Deterministic
@@ -9,13 +14,41 @@ n           n log n     n log n     log n       No          Yes
 
 
 
+## Features
+
+- **Unstable sort**, may reorder equal elements.
+- Disable the optimization from [BlockQuickSort](https://dl.acm.org/doi/10.1145/3274660), since its poor performance in Go.
+
+
+
+## QuickStart
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/zhangyunhao116/pdqsort"
+)
+
+func main() {
+	x := []int{3, 1, 2, 4, 5, 9, 8, 7}
+	pdqsort.Slice(x)
+	fmt.Printf("%v\n", x)
+}
+
+```
+
+
+
 ## Benchmark
 
-Go version: go1.18 linux/amd64
+Go version: go1.18-a412b5f0d8 linux/amd64
 
-CPU: AMD 3700x(8C16T), running at 3.6GHz
+CPU: Intel 11700k(8C16T)
 
-OS: ubuntu 18.04
+OS: ubuntu 20.04
 
 MEMORY: 16G x 2 (3200MHz)
 
