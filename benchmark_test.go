@@ -8,120 +8,95 @@ import (
 	"github.com/zhangyunhao116/fastrand"
 )
 
-var sizes = []int{1 << 5, 1 << 8, 1 << 10, 1 << 12, 1 << 16}
+var sizes = []int{1 << 6, 1 << 8, 1 << 10, 1 << 12, 1 << 16}
+
+type benchTask struct {
+	name string
+	f    func([]int)
+}
+
+var benchTasks = []benchTask{
+	{
+		name: "pdqsort",
+		f: func(i []int) {
+			Slice(i)
+		},
+	},
+	{
+		name: "stdsort",
+		f:    sort.Ints,
+	},
+}
+
+func benchmarkBase(b *testing.B, dataset func(x []int)) {
+	for _, size := range sizes {
+		for _, task := range benchTasks {
+			b.Run(fmt.Sprintf(task.name+"-%d", size), func(b *testing.B) {
+				b.StopTimer()
+				for i := 0; i < b.N; i++ {
+					data := make([]int, size)
+					dataset(data)
+					b.StartTimer()
+					task.f(data)
+					b.StopTimer()
+				}
+			})
+		}
+	}
+}
 
 func BenchmarkRandom(b *testing.B) {
-	for _, size := range sizes {
-		b.Run(fmt.Sprintf("pdqsort-%d", size), func(b *testing.B) {
-			b.StopTimer()
-			for i := 0; i < b.N; i++ {
-				data := make([]int, size)
-				for i := 0; i < len(data); i++ {
-					data[i] = fastrand.Int()
-				}
-				b.StartTimer()
-				Slice(data)
-				b.StopTimer()
-			}
-		})
-		b.Run(fmt.Sprintf("stdsort-%d", size), func(b *testing.B) {
-			b.StopTimer()
-			for i := 0; i < b.N; i++ {
-				data := make([]int, size)
-				for i := 0; i < len(data); i++ {
-					data[i] = fastrand.Int()
-				}
-				b.StartTimer()
-				sort.Ints(data)
-				b.StopTimer()
-			}
-		})
-	}
+	benchmarkBase(b, func(x []int) {
+		for i := range x {
+			x[i] = fastrand.Int()
+		}
+	})
 }
 
 func BenchmarkSorted(b *testing.B) {
-	for _, size := range sizes {
-		b.Run(fmt.Sprintf("pdqsort-%d", size), func(b *testing.B) {
-			b.StopTimer()
-			for i := 0; i < b.N; i++ {
-				data := make([]int, size)
-				for i := 0; i < len(data); i++ {
-					data[i] = i
-				}
-				b.StartTimer()
-				Slice(data)
-				b.StopTimer()
-			}
-		})
-		b.Run(fmt.Sprintf("stdsort-%d", size), func(b *testing.B) {
-			b.StopTimer()
-			for i := 0; i < b.N; i++ {
-				data := make([]int, size)
-				for i := 0; i < len(data); i++ {
-					data[i] = i
-				}
-				b.StartTimer()
-				sort.Ints(data)
-				b.StopTimer()
-			}
-		})
-	}
+	benchmarkBase(b, func(x []int) {
+		for i := range x {
+			x[i] = i
+		}
+	})
 }
 
-func BenchmarkReverse(b *testing.B) {
-	for _, size := range sizes {
-		b.Run(fmt.Sprintf("pdqsort-%d", size), func(b *testing.B) {
-			b.StopTimer()
-			for i := 0; i < b.N; i++ {
-				data := make([]int, size)
-				for i := 0; i < len(data); i++ {
-					data[i] = len(data) - i
-				}
-				b.StartTimer()
-				Slice(data)
-				b.StopTimer()
+func BenchmarkSorted90(b *testing.B) {
+	benchmarkBase(b, func(x []int) {
+		for i := range x {
+			if i < len(x)-(len(x)/10) {
+				x[i] = i
+			} else {
+				x[i] = fastrand.Int()
 			}
-		})
-		b.Run(fmt.Sprintf("stdsort-%d", size), func(b *testing.B) {
-			b.StopTimer()
-			for i := 0; i < b.N; i++ {
-				data := make([]int, size)
-				for i := 0; i < len(data); i++ {
-					data[i] = len(data) - i
-				}
-				b.StartTimer()
-				sort.Ints(data)
-				b.StopTimer()
-			}
-		})
-	}
+		}
+	})
 }
 
-func BenchmarkAlmostDuplicate(b *testing.B) {
-	for _, size := range sizes {
-		b.Run(fmt.Sprintf("pdqsort-%d", size), func(b *testing.B) {
-			b.StopTimer()
-			for i := 0; i < b.N; i++ {
-				data := make([]int, size)
-				for i := 0; i < len(data); i++ {
-					data[i] = fastrand.Intn(10)
-				}
-				b.StartTimer()
-				Slice(data)
-				b.StopTimer()
+func BenchmarkReversed(b *testing.B) {
+	benchmarkBase(b, func(x []int) {
+		for i := range x {
+			x[i] = len(x) - i
+		}
+	})
+}
+
+func BenchmarkReversed90(b *testing.B) {
+	benchmarkBase(b, func(x []int) {
+		for i := range x {
+			if i < len(x)-(len(x)/10) {
+				x[i] = len(x) - i
+			} else {
+				x[i] = fastrand.Int()
 			}
-		})
-		b.Run(fmt.Sprintf("stdsort-%d", size), func(b *testing.B) {
-			b.StopTimer()
-			for i := 0; i < b.N; i++ {
-				data := make([]int, size)
-				for i := 0; i < len(data); i++ {
-					data[i] = fastrand.Intn(10)
-				}
-				b.StartTimer()
-				sort.Ints(data)
-				b.StopTimer()
-			}
-		})
-	}
+		}
+	})
+}
+
+func BenchmarkMod8(b *testing.B) {
+	benchmarkBase(b, func(x []int) {
+		for i := range x {
+			x[i] = i % 8
+		}
+	})
 }

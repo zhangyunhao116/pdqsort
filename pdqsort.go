@@ -76,7 +76,6 @@ func recurse[T constraints.Ordered](v []T, pred T, predExist bool, limit int) {
 
 		// Partition the slice.
 		mid, wasP := partition(v, pivotidx)
-		wasBalanced = min(mid, len(v)-mid) >= len(v)/8
 		wasPartitioned = wasP
 
 		left, right := v[:mid], v[mid+1:]
@@ -84,11 +83,13 @@ func recurse[T constraints.Ordered](v []T, pred T, predExist bool, limit int) {
 		pivotExist := true
 
 		if len(left) > len(right) {
+			wasBalanced = len(right) >= len(v)/8
 			recurse(left, pred, predExist, limit)
 			v = right
 			pred = pivot
 			predExist = pivotExist
 		} else {
+			wasBalanced = len(left) >= len(v)/8
 			recurse(right, pivot, pivotExist, limit)
 			v = left
 		}
@@ -233,4 +234,9 @@ func shiftHead[T constraints.Ordered](v []T, a, b int) {
 			v[i], v[i-1] = v[i-1], v[i]
 		}
 	}
+}
+
+func nextPowerOfTwo(length int) uint {
+	shift := uint(strconv.IntSize - bits.LeadingZeros(uint(length)))
+	return uint(1 << shift)
 }
