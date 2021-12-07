@@ -107,6 +107,18 @@ func partition[T constraints.Ordered](v []T, pivotidx int) (int, bool) {
 	pivot := v[pivotidx]
 	v[0], v[pivotidx] = v[pivotidx], v[0]
 	i, j := 1, len(v)-1
+
+	for i <= j && v[i] < pivot {
+		i++
+	}
+	for i <= j && v[j] >= pivot {
+		j--
+	}
+	if i > j {
+		v[j], v[0] = v[0], v[j]
+		return j, true
+	}
+
 	for {
 		for i <= j && v[i] < pivot {
 			i++
@@ -122,7 +134,7 @@ func partition[T constraints.Ordered](v []T, pivotidx int) (int, bool) {
 		j--
 	}
 	v[j], v[0] = v[0], v[j]
-	return j, j == pivotidx
+	return j, false
 }
 
 // breakPatterns scatters some elements around in an attempt to break patterns that might cause imbalanced
