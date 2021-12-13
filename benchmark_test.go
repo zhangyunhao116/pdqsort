@@ -30,7 +30,7 @@ var benchTasks = []benchTask{
 func benchmarkBase(b *testing.B, dataset func(x []int)) {
 	for _, size := range sizes {
 		for _, task := range benchTasks {
-			b.Run(fmt.Sprintf(task.name+"-%d", size), func(b *testing.B) {
+			b.Run(fmt.Sprintf(task.name+"_%d", size), func(b *testing.B) {
 				b.StopTimer()
 				for i := 0; i < b.N; i++ {
 					data := make([]int, size)
@@ -60,14 +60,14 @@ func BenchmarkSorted(b *testing.B) {
 	})
 }
 
-func BenchmarkSorted90(b *testing.B) {
+func BenchmarkNearlySorted(b *testing.B) {
 	benchmarkBase(b, func(x []int) {
 		for i := range x {
-			if i < len(x)-(len(x)/10) {
-				x[i] = i
-			} else {
-				x[i] = rand.Int()
-			}
+			x[i] = i
+		}
+		for i := 0; i < len(x)/20; i++ {
+			a, b := rand.Intn(len(x)), rand.Intn(len(x))
+			x[a], x[b] = x[b], x[a]
 		}
 	})
 }
@@ -80,14 +80,14 @@ func BenchmarkReversed(b *testing.B) {
 	})
 }
 
-func BenchmarkReversed90(b *testing.B) {
+func BenchmarkNearlyReversed(b *testing.B) {
 	benchmarkBase(b, func(x []int) {
 		for i := range x {
-			if i < len(x)-(len(x)/10) {
-				x[i] = len(x) - i
-			} else {
-				x[i] = rand.Int()
-			}
+			x[i] = len(x) - i
+		}
+		for i := 0; i < len(x)/20; i++ {
+			a, b := rand.Intn(len(x)), rand.Intn(len(x))
+			x[a], x[b] = x[b], x[a]
 		}
 	})
 }
@@ -96,6 +96,14 @@ func BenchmarkMod8(b *testing.B) {
 	benchmarkBase(b, func(x []int) {
 		for i := range x {
 			x[i] = i % 8
+		}
+	})
+}
+
+func BenchmarkAllEqual(b *testing.B) {
+	benchmarkBase(b, func(x []int) {
+		for i := range x {
+			x[i] = 1
 		}
 	})
 }
