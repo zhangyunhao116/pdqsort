@@ -1,10 +1,9 @@
 package pdqsort
 
 import (
+	"math/rand"
 	"sort"
 	"testing"
-
-	"github.com/zhangyunhao116/fastrand"
 )
 
 func TestPDQSort(t *testing.T) {
@@ -14,16 +13,16 @@ func TestPDQSort(t *testing.T) {
 }
 
 func TestPartialInsertionSort(t *testing.T) {
-	randomTestTimes := fastrand.Intn(1000)
+	randomTestTimes := rand.Intn(1000)
 	for i := 0; i < randomTestTimes; i++ {
-		randomLenth := fastrand.Intn(100)
+		randomLenth := rand.Intn(100)
 		if randomLenth == 0 {
 			continue
 		}
 		v1 := make([]int, randomLenth)
 		v2 := make([]int, randomLenth)
 		for j := 0; j < randomLenth; j++ {
-			randomValue := fastrand.Intn(randomLenth)
+			randomValue := rand.Intn(randomLenth)
 			v1[j] = randomValue
 			v2[j] = randomValue
 		}
@@ -39,15 +38,15 @@ func TestPartialInsertionSort(t *testing.T) {
 }
 
 func TestPartitionEqual(t *testing.T) {
-	randomTestTimes := fastrand.Intn(1000)
+	randomTestTimes := rand.Intn(1000)
 	for i := 0; i < randomTestTimes; i++ {
-		randomLenth := fastrand.Intn(100)
+		randomLenth := rand.Intn(100)
 		if randomLenth == 0 {
 			continue
 		}
 		v1 := make([]int, randomLenth)
 		for j := 0; j < randomLenth; j++ {
-			randomValue := fastrand.Intn(randomLenth/2 + 1)
+			randomValue := rand.Intn(randomLenth/2 + 1)
 			v1[j] = randomValue
 		}
 		minvalue := v1[0]
@@ -78,15 +77,15 @@ func TestPartition(t *testing.T) {
 }
 
 func TestBreakPatternsFuzz(t *testing.T) {
-	randomTestTimes := fastrand.Intn(1000)
+	randomTestTimes := rand.Intn(1000)
 	for i := 0; i < randomTestTimes; i++ {
-		randomLenth := fastrand.Intn(1000)
+		randomLenth := rand.Intn(1000)
 		if randomLenth == 0 {
 			continue
 		}
 		v1 := make([]int, randomLenth)
 		for j := 0; j < randomLenth; j++ {
-			v1[j] = fastrand.Intn(randomLenth)
+			v1[j] = rand.Intn(randomLenth)
 		}
 		breakPatterns(v1)
 	}
@@ -94,18 +93,18 @@ func TestBreakPatternsFuzz(t *testing.T) {
 
 func fuzzTestPartition(t *testing.T, f func(data []int, pivotidx int) int) {
 	const times = 2048
-	randomTestTimes := fastrand.Intn(times)
+	randomTestTimes := rand.Intn(times)
 	for i := 0; i < randomTestTimes; i++ {
-		randomLenth := fastrand.Intn(times)
+		randomLenth := rand.Intn(times)
 		if randomLenth == 0 {
 			continue
 		}
 		v1 := make([]int, randomLenth)
 		for j := 0; j < randomLenth; j++ {
-			randomValue := fastrand.Intn(randomLenth)
+			randomValue := rand.Intn(randomLenth)
 			v1[j] = randomValue
 		}
-		pivotidx := fastrand.Intn(len(v1))
+		pivotidx := rand.Intn(len(v1))
 		newpivotidx := f(v1, pivotidx)
 		pivot := v1[newpivotidx]
 		for i, v := range v1 {
@@ -121,16 +120,16 @@ func fuzzTestPartition(t *testing.T, f func(data []int, pivotidx int) int) {
 
 func fuzzTestSort(t *testing.T, f func(data []int)) {
 	const times = 2048
-	randomTestTimes := fastrand.Intn(times)
+	randomTestTimes := rand.Intn(times)
 	for i := 0; i < randomTestTimes; i++ {
-		randomLenth := fastrand.Intn(times)
+		randomLenth := rand.Intn(times)
 		if randomLenth == 0 {
 			continue
 		}
 		v1 := make([]int, randomLenth)
 		v2 := make([]int, randomLenth)
 		for j := 0; j < randomLenth; j++ {
-			randomValue := fastrand.Intn(randomLenth)
+			randomValue := rand.Intn(randomLenth)
 			v1[j] = randomValue
 			v2[j] = randomValue
 		}
