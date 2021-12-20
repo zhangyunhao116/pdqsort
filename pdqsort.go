@@ -7,6 +7,9 @@ import (
 )
 
 func Slice[T constraints.Ordered](v []T) {
+	if len(v) <= 1 {
+		return
+	}
 	var tmp T // meaningless variable
 	limit := strconv.IntSize - bits.LeadingZeros(uint(len(v)))
 	recurse(v, tmp, false, limit)
