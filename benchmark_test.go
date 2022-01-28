@@ -17,9 +17,7 @@ type benchTask struct {
 var benchTasks = []benchTask{
 	{
 		name: "pdqsort",
-		f: func(i []int) {
-			Slice(i)
-		},
+		f:    Slice[int],
 	},
 	{
 		name: "stdsort",
