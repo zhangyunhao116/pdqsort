@@ -1,12 +1,11 @@
 package pdqsort
 
 import (
-	"constraints"
 	"math/bits"
 	"strconv"
 )
 
-func Slice[T constraints.Ordered](v []T) {
+func Slice[T ordered](v []T) {
 	if len(v) <= 1 {
 		return
 	}
@@ -21,9 +20,8 @@ func Slice[T constraints.Ordered](v []T) {
 //
 // `limit` is the number of allowed imbalanced partitions before switching to `heapsort`. If zero,
 // this function will immediately switch to heapsort.
-func recurse[T constraints.Ordered](v []T, pred T, predExist bool, limit int) {
-	// Slices of up to this length get sorted using insertion sort.
-	const MAX_INSERTION = 24
+func recurse[T ordered](v []T, pred T, predExist bool, limit int) {
+	const MaxInsertion = 24 // slices of up to this length get sorted using insertion sort.
 
 	var (
 		// True if the last partitioning was reasonably balanced.
@@ -36,7 +34,7 @@ func recurse[T constraints.Ordered](v []T, pred T, predExist bool, limit int) {
 		length := len(v)
 
 		// Very short slices get sorted using insertion sort.
-		if length <= MAX_INSERTION {
+		if length <= MaxInsertion {
 			insertionSort(v)
 			return
 		}
@@ -106,7 +104,7 @@ func recurse[T constraints.Ordered](v []T, pred T, predExist bool, limit int) {
 //
 // 1. New pivot index.
 // 2. True if `v` was already partitioned.
-func partition[T constraints.Ordered](v []T, pivotidx int) (int, bool) {
+func partition[T ordered](v []T, pivotidx int) (int, bool) {
 	pivot := v[pivotidx]
 	v[0], v[pivotidx] = v[pivotidx], v[0]
 	i, j := 1, len(v)-1
@@ -142,7 +140,7 @@ func partition[T constraints.Ordered](v []T, pivotidx int) (int, bool) {
 
 // breakPatterns scatters some elements around in an attempt to break patterns that might cause imbalanced
 // partitions in quicksort.
-func breakPatterns[T constraints.Ordered](v []T) {
+func breakPatterns[T ordered](v []T) {
 	length := len(v)
 	if length >= 8 {
 		// Xorshift paper: https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
@@ -167,7 +165,7 @@ func breakPatterns[T constraints.Ordered](v []T) {
 //
 // Returns the number of elements equal to the pivot. It is assumed that `v` does not contain
 // elements smaller than the pivot.
-func partitionEqual[T constraints.Ordered](v []T, pivotidx int) int {
+func partitionEqual[T ordered](v []T, pivotidx int) int {
 	v[0], v[pivotidx] = v[pivotidx], v[0]
 	pivot := v[0] // minimum value
 
@@ -192,7 +190,7 @@ func partitionEqual[T constraints.Ordered](v []T, pivotidx int) int {
 
 // partialInsertionSort partially sorts a slice by shifting several out-of-order elements around.
 // Returns `true` if the slice is sorted at the end. This function is `O(n)` worst-case.
-func partialInsertionSort[T constraints.Ordered](v []T) bool {
+func partialInsertionSort[T ordered](v []T) bool {
 	const (
 		MaxSteps         = 5  // maximum number of adjacent out-of-order pairs that will get shifted
 		ShortestShifting = 50 // if the slice is shorter than this, don't shift any elements
@@ -227,7 +225,7 @@ func partialInsertionSort[T constraints.Ordered](v []T) bool {
 	return false
 }
 
-func shiftTail[T constraints.Ordered](v []T, a, b int) {
+func shiftTail[T ordered](v []T, a, b int) {
 	l := b - a
 	if l >= 2 {
 		for i := l - 1; i >= 1; i-- {
@@ -239,7 +237,7 @@ func shiftTail[T constraints.Ordered](v []T, a, b int) {
 	}
 }
 
-func shiftHead[T constraints.Ordered](v []T, a, b int) {
+func shiftHead[T ordered](v []T, a, b int) {
 	l := b - a
 	if l >= 2 {
 		for i := 1; i < l; i++ {

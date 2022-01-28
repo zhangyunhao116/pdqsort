@@ -1,9 +1,7 @@
 package pdqsort
 
-import "constraints"
-
 // insertionSort sorts v[begin:end) using insertion sort.
-func insertionSort[T constraints.Ordered](v []T) {
+func insertionSort[T ordered](v []T) {
 	for cur := 1; cur < len(v); cur++ {
 		for j := cur; j > 0 && v[j] < v[j-1]; j-- {
 			v[j], v[j-1] = v[j-1], v[j]
@@ -12,7 +10,7 @@ func insertionSort[T constraints.Ordered](v []T) {
 }
 
 // siftDown implements the heap property on v[lo:hi].
-func siftDown[T constraints.Ordered](v []T, lo, hi int) {
+func siftDown[T ordered](v []T, lo, hi int) {
 	root := lo
 	for {
 		child := 2*root + 1
@@ -30,7 +28,7 @@ func siftDown[T constraints.Ordered](v []T, lo, hi int) {
 	}
 }
 
-func heapSort[T constraints.Ordered](v []T) {
+func heapSort[T ordered](v []T) {
 	lo := 0
 	hi := len(v)
 
@@ -46,7 +44,7 @@ func heapSort[T constraints.Ordered](v []T) {
 	}
 }
 
-func simpleQS[T constraints.Ordered](v []T) {
+func simpleQS[T ordered](v []T) {
 	if len(v) > 1 {
 		p := simplePartition(v, 0)
 		simpleQS(v[:p])
@@ -54,7 +52,7 @@ func simpleQS[T constraints.Ordered](v []T) {
 	}
 }
 
-func simplePartition[T constraints.Ordered](v []T, pivotidx int) int {
+func simplePartition[T ordered](v []T, pivotidx int) int {
 	pivot := v[pivotidx]
 	v[0], v[pivotidx] = v[pivotidx], v[0]
 	i, j := 1, len(v)-1

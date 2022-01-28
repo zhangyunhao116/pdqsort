@@ -1,7 +1,5 @@
 package pdqsort
 
-import "constraints"
-
 // choosePivot chooses a pivot in `v` and returns the index and `true` if the slice is likely already sorted.
 //
 // Elements in `v` might be reordered in the process.
@@ -9,7 +7,7 @@ import "constraints"
 // [0,8): choose a static pivot.
 // [8,ShortestNinther): use the simple median-of-three method.
 // [ShortestNinther,∞): use the Tukey’s ninther method.
-func choosePivot[T constraints.Ordered](v []T) (pivotidx int, likelySorted bool) {
+func choosePivot[T ordered](v []T) (pivotidx int, likelySorted bool) {
 	const (
 		// ShortestNinther is the minimum length to choose the Tukey’s ninther method.
 		// Shorter slices use the simple median-of-three method.
@@ -51,7 +49,7 @@ func choosePivot[T constraints.Ordered](v []T) (pivotidx int, likelySorted bool)
 }
 
 // sort2 swaps `a` `b` so that `v[a] <= v[b]`.
-func sort2[T constraints.Ordered](v []T, a, b, swaps *int) {
+func sort2[T ordered](v []T, a, b, swaps *int) {
 	if v[*b] < v[*a] {
 		*a, *b = *b, *a
 		*swaps++
@@ -59,20 +57,20 @@ func sort2[T constraints.Ordered](v []T, a, b, swaps *int) {
 }
 
 // sort3 swaps `a` `b` `c` so that `v[a] <= v[b] <= v[c]`.
-func sort3[T constraints.Ordered](v []T, a, b, c, swaps *int) {
+func sort3[T ordered](v []T, a, b, c, swaps *int) {
 	sort2(v, a, b, swaps)
 	sort2(v, b, c, swaps)
 	sort2(v, a, b, swaps)
 }
 
 // sortAdjacent finds the median of `v[a - 1], v[a], v[a + 1]` and stores the index into `a`.
-func sortAdjacent[T constraints.Ordered](v []T, a, swaps *int) {
+func sortAdjacent[T ordered](v []T, a, swaps *int) {
 	t1 := *a - 1
 	t2 := *a + 1
 	sort3(v, &t1, a, &t2, swaps)
 }
 
-func reverseRange[T constraints.Ordered](v []T) {
+func reverseRange[T ordered](v []T) {
 	i := 0
 	j := len(v) - 1
 	for i < j {
