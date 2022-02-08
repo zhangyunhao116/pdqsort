@@ -10,66 +10,32 @@ func insertionSort[T ordered](v []T) {
 }
 
 // siftDown implements the heap property on v[lo:hi].
-func siftDown[T ordered](v []T, lo, hi int) {
-	root := lo
+func siftDown[T ordered](v []T, node int) {
 	for {
-		child := 2*root + 1
-		if child >= hi {
+		child := 2*node + 1
+		if child >= len(v) {
 			break
 		}
-		if child+1 < hi && v[child] < v[child+1] {
+		if child+1 < len(v) && v[child] < v[child+1] {
 			child++
 		}
-		if v[root] >= v[child] {
+		if v[node] >= v[child] {
 			return
 		}
-		v[root], v[child] = v[child], v[root]
-		root = child
+		v[node], v[child] = v[child], v[node]
+		node = child
 	}
 }
 
 func heapSort[T ordered](v []T) {
-	lo := 0
-	hi := len(v)
-
 	// Build heap with greatest element at top.
-	for i := (hi - 1) / 2; i >= 0; i-- {
-		siftDown(v, i, hi)
+	for i := (len(v) - 1) / 2; i >= 0; i-- {
+		siftDown(v, i)
 	}
 
 	// Pop elements into end of v.
-	for i := hi - 1; i >= 0; i-- {
+	for i := len(v) - 1; i >= 1; i-- {
 		v[0], v[i] = v[i], v[0]
-		siftDown(v, lo, i)
+		siftDown(v[:i], 0)
 	}
-}
-
-func simpleQS[T ordered](v []T) {
-	if len(v) > 1 {
-		p := simplePartition(v, 0)
-		simpleQS(v[:p])
-		simpleQS(v[p+1:])
-	}
-}
-
-func simplePartition[T ordered](v []T, pivotidx int) int {
-	pivot := v[pivotidx]
-	v[0], v[pivotidx] = v[pivotidx], v[0]
-	i, j := 1, len(v)-1
-	for {
-		for i <= j && v[i] < pivot {
-			i++
-		}
-		for i <= j && v[j] >= pivot {
-			j--
-		}
-		if i > j {
-			break
-		}
-		v[i], v[j] = v[j], v[i]
-		i++
-		j--
-	}
-	v[j], v[0] = v[0], v[j]
-	return j
 }
