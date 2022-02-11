@@ -1,16 +1,11 @@
 package pdqsort
 
-import (
-	"math/bits"
-	"strconv"
-)
-
 func Slice[T ordered](v []T) {
 	if len(v) <= 1 {
 		return
 	}
 	var tmp T // meaningless variable
-	limit := strconv.IntSize - bits.LeadingZeros(uint(len(v)))
+	limit := usize - bitsLeadingZeros(uint(len(v)))
 	recurse(v, tmp, false, limit)
 }
 
@@ -250,6 +245,6 @@ func shiftHead[T ordered](v []T, a, b int) {
 }
 
 func nextPowerOfTwo(length int) uint {
-	shift := uint(strconv.IntSize - bits.LeadingZeros(uint(length)))
+	shift := uint(usize - bitsLeadingZeros(uint(length)))
 	return uint(1 << shift)
 }
