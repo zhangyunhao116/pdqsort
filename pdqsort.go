@@ -133,26 +133,37 @@ func partition[T ordered](v []T, pivotidx int) (int, bool) {
 	return j, false
 }
 
+type xorshift uint64
+
+func (r *xorshift) Next() uint64 {
+	*r ^= *r << 13
+	*r ^= *r >> 17
+	*r ^= *r << 5
+	return uint64(*r)
+}
+
 // breakPatterns scatters some elements around in an attempt to break patterns that might cause imbalanced
 // partitions in quicksort.
+// Warning: this function will panic if `len(v) < 4`,
+// it's the caller's responsibility to make sure the `len(v) >= 4`.
 func breakPatterns[T ordered](v []T) {
 	length := len(v)
-	if length >= 8 {
-		// Xorshift paper: https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
-		random := uint(length)
-		random ^= random << 13
-		random ^= random >> 17
-		random ^= random << 5
-		modulus := nextPowerOfTwo(length)
-		pos := length / 8
 
-		for i := 0; i < 3; i++ {
-			other := int(random & (modulus - 1))
-			if other >= length {
-				other -= length
-			}
-			v[pos-1+i], v[other] = v[other], v[pos-1+i]
+	r := xorshift(length)
+
+	modulus := nextPowerOfTwo(length)
+
+	var idxs [3]uint
+	idxs[0] = uint(length/4) * 1
+	idxs[1] = uint(length/4) * 2
+	idxs[2] = uint(length/4) * 3
+
+	for _, idx := range idxs {
+		other := int(uint(r.Next()) & (modulus - 1))
+		if other >= length {
+			other -= length
 		}
+		v[idx], v[other] = v[other], v[idx]
 	}
 }
 
