@@ -154,9 +154,9 @@ func breakPatterns[T ordered](v []T) {
 	modulus := nextPowerOfTwo(length)
 
 	var idxs [3]uint
-	idxs[0] = uint(length/4) * 1
+	idxs[0] = uint(length/4)*2 - 1
 	idxs[1] = uint(length/4) * 2
-	idxs[2] = uint(length/4) * 3
+	idxs[2] = uint(length/4)*2 + 1
 
 	for _, idx := range idxs {
 		other := int(uint(r.Next()) & (modulus - 1))
