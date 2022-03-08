@@ -148,6 +148,9 @@ func (r *xorshift) Next() uint64 {
 // it's the caller's responsibility to make sure the `len(v) >= 4`.
 func breakPatterns[T ordered](v []T) {
 	length := len(v)
+	if length < 8 {
+		return
+	}
 
 	r := xorshift(length)
 
