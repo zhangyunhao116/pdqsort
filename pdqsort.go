@@ -178,23 +178,23 @@ func partitionEqual[T ordered](v []T, pivotidx int) int {
 	v[0], v[pivotidx] = v[pivotidx], v[0]
 	pivot := v[0] // minimum value
 
-	L := 1
-	R := len(v)
+	i := 1
+	j := len(v) - 1
 	for {
-		for L < R && pivot >= v[L] {
-			L++
+		for i <= j && pivot >= v[i] {
+			i++
 		}
-		for L < R && pivot < v[R-1] {
-			R--
+		for i <= j && pivot < v[j] {
+			j--
 		}
-		if L >= R {
+		if i > j {
 			break
 		}
-		R--
-		v[L], v[R] = v[R], v[L]
-		L++
+		v[i], v[j] = v[j], v[i]
+		i++
+		j--
 	}
-	return L
+	return i
 }
 
 // partialInsertionSort partially sorts a slice by shifting several out-of-order elements around.
