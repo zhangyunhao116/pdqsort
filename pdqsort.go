@@ -78,7 +78,7 @@ func recurse[T ordered](v []T, pred T, predExist bool, limit int) {
 		pivot := v[mid]
 		pivotExist := true
 
-		if len(left) > len(right) {
+		if len(left) < len(right) {
 			wasBalanced = len(right) >= len(v)/8
 			recurse(left, pred, predExist, limit)
 			v = right
