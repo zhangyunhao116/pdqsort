@@ -79,13 +79,13 @@ func recurse[T ordered](v []T, pred T, predExist bool, limit int) {
 		pivotExist := true
 
 		if len(left) < len(right) {
-			wasBalanced = len(right) >= len(v)/8
+			wasBalanced = len(left) >= len(v)/8
 			recurse(left, pred, predExist, limit)
 			v = right
 			pred = pivot
 			predExist = pivotExist
 		} else {
-			wasBalanced = len(left) >= len(v)/8
+			wasBalanced = len(right) >= len(v)/8
 			recurse(right, pivot, pivotExist, limit)
 			v = left
 		}
@@ -144,8 +144,6 @@ func (r *xorshift) Next() uint64 {
 
 // breakPatterns scatters some elements around in an attempt to break patterns that might cause imbalanced
 // partitions in quicksort.
-// Warning: this function will panic if `len(v) < 4`,
-// it's the caller's responsibility to make sure the `len(v) >= 4`.
 func breakPatterns[T ordered](v []T) {
 	length := len(v)
 	if length < 8 {
@@ -249,7 +247,7 @@ func shiftTail[T ordered](v []T, a, b int) {
 func shiftHead[T ordered](v []T, a, b int) {
 	l := b - a
 	if l >= 2 {
-		for i := 1; i < l; i++ {
+		for i := a + 1; i < l; i++ {
 			if v[i] >= v[i-1] {
 				break
 			}

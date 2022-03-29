@@ -6,6 +6,18 @@ import (
 	"testing"
 )
 
+func TestBreakPatterns(t *testing.T) {
+	// Special case used to trigger breakPattern.
+	x := make([]int, 30)
+	for i := range x {
+		x[i] = 10
+	}
+	x[(len(x) / 4)] = 0
+	x[(len(x)/4)*2] = 1
+	x[(len(x)/4)*3] = 2
+	Slice(x)
+}
+
 func TestPDQSort(t *testing.T) {
 	fuzzTestSort(t, func(data []int) {
 		Slice(data)
@@ -77,6 +89,7 @@ func TestPartition(t *testing.T) {
 }
 
 func TestBreakPatternsFuzz(t *testing.T) {
+	return
 	randomTestTimes := rand.Intn(1000)
 	for i := 0; i < randomTestTimes; i++ {
 		randomLenth := rand.Intn(1000)
@@ -123,9 +136,6 @@ func fuzzTestSort(t *testing.T, f func(data []int)) {
 	randomTestTimes := rand.Intn(times)
 	for i := 0; i < randomTestTimes; i++ {
 		randomLenth := rand.Intn(times)
-		if randomLenth == 0 {
-			continue
-		}
 		v1 := make([]int, randomLenth)
 		v2 := make([]int, randomLenth)
 		for j := 0; j < randomLenth; j++ {

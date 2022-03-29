@@ -20,3 +20,22 @@ func TestChoosePivotFuzz(t *testing.T) {
 		_ = v1[pivotidx]
 	}
 }
+
+func TestReverseRange(t *testing.T) {
+	data := []int{1, 2, 3, 4, 4, 5, 7, 8}
+	reverseRange(data)
+	for i := len(data) - 1; i > 0; i-- {
+		if data[i] > data[i-1] {
+			t.Fatalf("reverRange didn't work")
+		}
+	}
+
+	data1 := []int{1, 2, 3, 4, 5, 7, 8}
+	data2 := []int{1, 2, 5, 4, 3, 7, 8}
+	reverseRange(data1[2:5])
+	for i, v := range data1 {
+		if v != data2[i] {
+			t.Fatalf("reverRange didn't work")
+		}
+	}
+}

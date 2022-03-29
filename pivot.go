@@ -4,9 +4,9 @@ package pdqsort
 //
 // Elements in `v` might be reordered in the process.
 //
-// [0,8): choose a static pivot.
-// [8,ShortestNinther): use the simple median-of-three method.
-// [ShortestNinther,∞): use the Tukey’s ninther method.
+// [0,8): chooses a static pivot.
+// [8,ShortestNinther): uses the simple median-of-three method.
+// [ShortestNinther,∞): uses the Tukey’s ninther method.
 func choosePivot[T ordered](v []T) (pivotidx int, likelySorted bool) {
 	const (
 		// ShortestNinther is the minimum length to choose the Tukey’s ninther method.
