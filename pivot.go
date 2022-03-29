@@ -30,12 +30,12 @@ func choosePivot[T ordered](v []T) (pivotidx int, likelySorted bool) {
 	if l >= 8 {
 		if l >= ShortestNinther {
 			// Find medians in the neighborhoods of `a`, `b`, and `c`.
-			sortAdjacent(v, &a, &swaps)
-			sortAdjacent(v, &b, &swaps)
-			sortAdjacent(v, &c, &swaps)
+			a = sortAdjacent(v, a, &swaps)
+			b = sortAdjacent(v, b, &swaps)
+			c = sortAdjacent(v, c, &swaps)
 		}
 		// Find the median among `a`, `b`, and `c`.
-		sort3(v, &a, &b, &c, &swaps)
+		b = sort3(v, a, b, c, &swaps)
 	}
 
 	if swaps < MaxSwaps {
@@ -49,25 +49,25 @@ func choosePivot[T ordered](v []T) (pivotidx int, likelySorted bool) {
 }
 
 // sort2 swaps `a` `b` so that `v[a] <= v[b]`.
-func sort2[T ordered](v []T, a, b, swaps *int) {
-	if v[*b] < v[*a] {
-		*a, *b = *b, *a
+func sort2[T ordered](v []T, a, b int, swaps *int) (int, int) {
+	if v[b] < v[a] {
 		*swaps++
+		return b, a
 	}
+	return a, b
 }
 
-// sort3 swaps `a` `b` `c` so that `v[a] <= v[b] <= v[c]`.
-func sort3[T ordered](v []T, a, b, c, swaps *int) {
-	sort2(v, a, b, swaps)
-	sort2(v, b, c, swaps)
-	sort2(v, a, b, swaps)
+// sort3 swaps `a` `b` `c` so that `v[a] <= v[b] <= v[c]`, then return `b`.
+func sort3[T ordered](v []T, a, b, c int, swaps *int) int {
+	a, b = sort2(v, a, b, swaps)
+	b, c = sort2(v, b, c, swaps)
+	a, b = sort2(v, a, b, swaps)
+	return b
 }
 
 // sortAdjacent finds the median of `v[a - 1], v[a], v[a + 1]` and stores the index into `a`.
-func sortAdjacent[T ordered](v []T, a, swaps *int) {
-	t1 := *a - 1
-	t2 := *a + 1
-	sort3(v, &t1, a, &t2, swaps)
+func sortAdjacent[T ordered](v []T, a int, swaps *int) int {
+	return sort3(v, a-1, a, a+1, swaps)
 }
 
 func reverseRange[T ordered](v []T) {
