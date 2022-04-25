@@ -1,11 +1,10 @@
 package pdqsort
 
+import "math/bits"
+
 func Slice[T ordered](v []T) {
-	if len(v) <= 1 {
-		return
-	}
 	var tmp T // meaningless variable
-	limit := usize - bitsLeadingZeros(uint(len(v)))
+	limit := bits.Len(uint(len(v)))
 	recurse(v, tmp, false, limit)
 }
 
@@ -16,7 +15,7 @@ func Slice[T ordered](v []T) {
 // `limit` is the number of allowed imbalanced partitions before switching to `heapsort`. If zero,
 // this function will immediately switch to heapsort.
 func recurse[T ordered](v []T, pred T, predExist bool, limit int) {
-	const MaxInsertion = 24 // slices of up to this length get sorted using insertion sort.
+	const maxInsertion = 24 // slices of up to this length get sorted using insertion sort.
 
 	var (
 		// True if the last partitioning was reasonably balanced.
@@ -29,7 +28,7 @@ func recurse[T ordered](v []T, pred T, predExist bool, limit int) {
 		length := len(v)
 
 		// Very short slices get sorted using insertion sort.
-		if length <= MaxInsertion {
+		if length <= maxInsertion {
 			insertionSort(v)
 			return
 		}
@@ -92,7 +91,7 @@ func recurse[T ordered](v []T, pred T, predExist bool, limit int) {
 	}
 }
 
-// Partitions `v` into elements smaller than `v[pivotidx]`, followed by elements greater than or
+// partition partitions `v` into elements smaller than `v[pivotidx]`, followed by elements greater than or
 // equal to `v[pivotidx]`.
 //
 // Returns a tuple of:
@@ -199,12 +198,12 @@ func partitionEqual[T ordered](v []T, pivotidx int) int {
 // Returns `true` if the slice is sorted at the end. This function is `O(n)` worst-case.
 func partialInsertionSort[T ordered](v []T) bool {
 	const (
-		MaxSteps         = 5  // maximum number of adjacent out-of-order pairs that will get shifted
-		ShortestShifting = 50 // if the slice is shorter than this, don't shift any elements
+		maxSteps         = 5  // maximum number of adjacent out-of-order pairs that will get shifted
+		shortestShifting = 50 // if the slice is shorter than this, don't shift any elements
 	)
 	length := len(v)
 	i := 1
-	for k := 0; k < MaxSteps; k++ {
+	for k := 0; k < maxSteps; k++ {
 		// Find the next pair of adjacent out-of-order elements.
 		for i < length && v[i] >= v[i-1] {
 			i++
@@ -216,7 +215,7 @@ func partialInsertionSort[T ordered](v []T) bool {
 		}
 
 		// Don't shift elements on short arrays, that has a performance cost.
-		if length < ShortestShifting {
+		if length < shortestShifting {
 			return false
 		}
 
@@ -257,6 +256,6 @@ func shiftHead[T ordered](v []T, a, b int) {
 }
 
 func nextPowerOfTwo(length int) uint {
-	shift := uint(usize - bitsLeadingZeros(uint(length)))
+	shift := bits.Len(uint(length))
 	return uint(1 << shift)
 }

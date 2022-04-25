@@ -9,11 +9,11 @@ package pdqsort
 // [ShortestNinther,∞): uses the Tukey’s ninther method.
 func choosePivot[T ordered](v []T) (pivotidx int, likelySorted bool) {
 	const (
-		// ShortestNinther is the minimum length to choose the Tukey’s ninther method.
+		// shortestNinther is the minimum length to choose the Tukey’s ninther method.
 		// Shorter slices use the simple median-of-three method.
-		ShortestNinther = 50
-		// MaxSwaps is the maximum number of swaps that can be performed in this function.
-		MaxSwaps = 4 * 3
+		shortestNinther = 50
+		// maxSwaps is the maximum number of swaps that can be performed in this function.
+		maxSwaps = 4 * 3
 	)
 
 	l := len(v)
@@ -28,7 +28,7 @@ func choosePivot[T ordered](v []T) (pivotidx int, likelySorted bool) {
 	)
 
 	if l >= 8 {
-		if l >= ShortestNinther {
+		if l >= shortestNinther {
 			// Find medians in the neighborhoods of `a`, `b`, and `c`.
 			a = sortAdjacent(v, a, &swaps)
 			b = sortAdjacent(v, b, &swaps)
@@ -38,7 +38,7 @@ func choosePivot[T ordered](v []T) (pivotidx int, likelySorted bool) {
 		b = sort3(v, a, b, c, &swaps)
 	}
 
-	if swaps < MaxSwaps {
+	if swaps < maxSwaps {
 		return b, (swaps == 0)
 	} else {
 		// The maximum number of swaps was performed. Chances are the slice is descending or mostly
