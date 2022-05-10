@@ -5,6 +5,13 @@ base:
   maxerr: 1
   maxrun: 1
 
+baseall:
+  file: "baseall.txt"
+  beforerun: "rm -f -- baseall.txt"
+  run: "go test -run=NOTEST -bench='.+/pdqsort' -count=10 -timeout=60h > baseall.txt"
+  maxerr: 1
+  maxrun: 10
+
 cmp:
   file: "latest.txt"
   beforerun: "rm -f -- latest.txt"
@@ -16,10 +23,10 @@ cmp:
 cmpall:
   file: "latestall.txt"
   beforerun: "rm -f -- latestall.txt"
-  run: "go test -run=NOTEST -bench='.+/pdqsort' -cpu=1 -benchtime=1s -count=5 -timeout=60h > latestall.txt"
+  run: "go test -run=NOTEST -bench='.+/pdqsort' -count=10 -timeout=60h > latestall.txt"
   afterrun: "benchstat base.txt latestall.txt"
   maxerr: 1
-  maxrun: 1
+  maxrun: 10
 
 release:
   file: "release.txt"

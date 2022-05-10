@@ -48,20 +48,20 @@ func choosePivot[T ordered](v []T) (pivotidx int, likelySorted bool) {
 	}
 }
 
-// sort2 swaps `a` `b` so that `v[a] <= v[b]`.
-func sort2[T ordered](v []T, a, b int, swaps *int) (int, int) {
+// sort3 swaps `a` `b` `c` so that `v[a] <= v[b] <= v[c]`, then returns `b`.
+func sort3[T ordered](v []T, a, b, c int, swaps *int) int {
 	if v[b] < v[a] {
 		*swaps++
-		return b, a
+		a, b = b, a
 	}
-	return a, b
-}
-
-// sort3 swaps `a` `b` `c` so that `v[a] <= v[b] <= v[c]`, then return `b`.
-func sort3[T ordered](v []T, a, b, c int, swaps *int) int {
-	a, b = sort2(v, a, b, swaps)
-	b, c = sort2(v, b, c, swaps)
-	a, b = sort2(v, a, b, swaps)
+	if v[c] < v[b] {
+		*swaps++
+		b, c = c, b
+	}
+	if v[b] < v[a] {
+		*swaps++
+		a, b = b, a
+	}
 	return b
 }
 
