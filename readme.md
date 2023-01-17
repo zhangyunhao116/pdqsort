@@ -1,5 +1,11 @@
 # pdqsort
 
+> The pdqsort has been merged into the Go standard library since Go 1.19, please use `sort` or `slices` directly instead of this package.
+>
+> issue: https://github.com/golang/go/issues/50154
+>
+> commit: https://github.com/golang/go/commit/72e77a7f41bbf45d466119444307fd3ae996e257
+
 The algorithm is mainly based on pattern-defeating quicksort by Orson Peters.
 
 Compared to sort.Ints(Go1.18), it is **2x** faster in random slices, and **2x ~ 60x** faster in common patterns.
